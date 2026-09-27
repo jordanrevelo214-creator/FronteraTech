@@ -1,36 +1,149 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontera Tech — Web Corporativa
 
-## Getting Started
+Sitio web corporativo oficial para **Frontera Tech**, firma especializada en ingeniería de software, arquitectura cloud y soluciones digitales a medida.
 
-First, run the development server:
+Desarrollado con una arquitectura moderna de componentes limpios, animaciones fluidas con **Motion**, estilos con **Tailwind CSS**, y empaquetado para producción mediante **Docker** y salida *standalone* de **Next.js**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Tecnologías Principales
+
+- **Framework:** [Next.js](https://nextjs.org/) (App Router, Server Components y Client Components optimizados)
+- **Lenguaje:** [TypeScript](https://www.typescriptlang.org/)
+- **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
+- **Animaciones:** [Motion para React](https://motion.dev/) (con soporte nativo para `prefers-reduced-motion`)
+- **Iconografía:** [Lucide React](https://lucide.dev/)
+- **Contenedores y Despliegue:** [Docker](https://www.docker.com/) (Multi-stage build) y Docker Compose
+
+---
+
+## 📂 Organización del Proyecto
+
+La estructura del proyecto sigue una separación clara de responsabilidades:
+
+```text
+c:/FronteraTech/
+├── src/
+│   ├── app/                      # Layout, metadatos SEO, página principal y estilos globales
+│   │   ├── globals.css           # Tokens de diseño, gradientes y animaciones
+│   │   ├── layout.tsx            # Metadata, fuentes tipográficas y contenedor raíz
+│   │   └── page.tsx              # Ensamblado de secciones y componente de introducción
+│   ├── components/
+│   │   ├── intro/                # Introducción de marca a pantalla completa (BrandIntro)
+│   │   ├── layout/               # Header con navegación sticky y Footer corporativo
+│   │   ├── sections/             # Secciones: Hero, Servicios, Proyectos, Nosotros, Equipo, Contacto
+│   │   ├── ui/                   # Componentes reutilizables: Button, Container, SectionHeader
+│   │   └── motion/               # Envoltorios y variantes de animación con soporte de accesibilidad
+│   └── data/                     # Contenido editable y centralizado (fácilmente sustituible)
+│       ├── company.ts            # Información general y descripción corporativa
+│       ├── navigation.ts         # Enlaces de navegación del menú
+│       ├── services.ts           # Servicios ofrecidos y problemas que resuelven
+│       ├── projects.ts           # Casos conceptuales del carrusel con tecnologías
+│       ├── about.ts              # Misión, visión, valores y metodología de trabajo
+│       ├── team.ts               # Integrantes, roles y enlaces profesionales
+│       └── contact.ts            # Canales directos de contacto (Email, WhatsApp, LinkedIn)
+├── public/                       # Activos estáticos, iconos y recursos multimedia
+├── Dockerfile                    # Construcción multi-etapa para producción (Next.js standalone)
+├── docker-compose.yml            # Orquestación lista para despliegue de contenedor
+├── .dockerignore                 # Exclusiones de contexto para Docker
+├── next.config.ts                # Configuración con output: "standalone"
+└── README.md                     # Documentación de instalación y uso
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚡ Ejecución en Desarrollo Local
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Requisitos previos
+- Node.js 20+ o 22+
+- npm 10+
 
-## Learn More
+### Pasos
 
-To learn more about Next.js, take a look at the following resources:
+1. **Instalar dependencias:**
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Iniciar servidor de desarrollo:**
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Abrir en el navegador:**
+   Visita [http://localhost:3000](http://localhost:3000)
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📦 Compilación y Producción Local
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Para probar la compilación de producción optimizada sin Docker:
+
+```bash
+# Generar la versión de producción
+npm run build
+
+# Arrancar el servidor de producción
+npm run start
+```
+
+---
+
+## 🐳 Despliegue con Docker
+
+El proyecto cuenta con un `Dockerfile` multi-etapa que optimiza el tamaño de la imagen final copiando únicamente el servidor standalone y los recursos estáticos generados por Next.js, ejecutándose bajo un usuario sin privilegios de root (`nextjs:nodejs`).
+
+### Opción A: Usando Docker Compose (Recomendado)
+
+1. **Construir y levantar el contenedor en segundo plano:**
+   ```bash
+   docker compose up --build -d
+   ```
+
+2. **Verificar el estado del servicio:**
+   ```bash
+   docker compose ps
+   ```
+
+3. **Ver logs de la aplicación:**
+   ```bash
+   docker compose logs -f
+   ```
+
+4. **Detener el contenedor:**
+   ```bash
+   docker compose down
+   ```
+
+### Opción B: Usando comandos estándar de Docker
+
+1. **Construir la imagen:**
+   ```bash
+   docker build -t fronteratech-web:latest .
+   ```
+
+2. **Ejecutar el contenedor:**
+   ```bash
+   docker run -d --name fronteratech -p 3000:3000 --restart unless-stopped fronteratech-web:latest
+   ```
+
+---
+
+## ✏️ Personalización del Contenido
+
+Todo el contenido textual, enlaces y canales de contacto están completamente centralizados en el directorio `src/data/`:
+
+- **Información y Eslogan:** Edita `src/data/company.ts`.
+- **Servicios:** Añade o modifica tarjetas en `src/data/services.ts`.
+- **Proyectos:** Actualiza el catálogo o añade enlaces reales en `src/data/projects.ts`.
+- **Misión, Visión y Metodología:** Ajusta los textos corporativos en `src/data/about.ts`.
+- **Equipo de Trabajo:** Modifica integrantes y enlaces en `src/data/team.ts`.
+- **Canales de Contacto:** Configura correos, números de WhatsApp y redes en `src/data/contact.ts`.
+
+---
+
+## ♿ Accesibilidad y Rendimiento
+
+- **Animación de entrada (Brand Intro):** Se muestra solo 1 vez por sesión mediante `sessionStorage`. Si el visitante ingresa con un enlace directo a una sección (`#servicios`, etc.) o tiene activado `prefers-reduced-motion`, la cortina se omite inmediatamente para garantizar fluidez.
+- **Navegación por teclado:** Totalmente funcional en botones, enlaces, menú móvil y controles del carrusel de proyectos (teclas de flecha izquierda y derecha).
+- **Gestos táctiles:** El carrusel de proyectos soporta desplazamiento táctil (*swipe*) en teléfonos y tabletas.
