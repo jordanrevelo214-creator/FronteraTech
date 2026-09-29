@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
-import { X, ArrowUpRight, Mail, MessageSquare } from "lucide-react";
+import { X, ArrowUpRight, Mail, MessageSquare, LogIn } from "lucide-react";
 import { navigationItems } from "@/data/navigation";
 import { companyData } from "@/data/company";
 import { contactData } from "@/data/contact";
@@ -91,6 +91,18 @@ export function FullscreenMenu({ isOpen, onClose }: FullscreenMenuProps) {
             </Link>
           ))}
         </nav>
+
+        {/* Acceso directo a administración */}
+        <div className="pt-6 mt-6 border-t border-slate-800/80">
+          <Link
+            href="/admin/login"
+            onClick={onClose}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold text-slate-300 hover:text-white bg-slate-900 border border-slate-700 hover:border-sky-500 hover:bg-sky-500/10 transition-colors"
+          >
+            <LogIn className="w-4 h-4 text-sky-400" />
+            <span>Acceso Administrador (Iniciar Sesión)</span>
+          </Link>
+        </div>
       </div>
 
       {/* Bottom Footer & Direct Contacts */}

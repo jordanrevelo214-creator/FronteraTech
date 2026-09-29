@@ -12,7 +12,7 @@ export function TeamSection() {
   return (
     <section
       id="equipo"
-      className="py-20 md:py-28 relative bg-[#040710]"
+      className="py-20 md:py-28 relative bg-transparent border-t border-slate-800/40"
       aria-label="Equipo de Frontera Tech"
     >
       <Container>

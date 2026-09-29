@@ -1,0 +1,115 @@
+// Prisma schema para Frontera Tech
+// Motor: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 1. Usuarios Administradores (con PBKDF2-HMAC-SHA256)
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// 2. Información Corporativa y General
+model CompanySetting {
+  id               String   @id @default("default")
+  name             String
+  legalName        String
+  tagline          String
+  shortDescription String   @db.Text
+  fullDescription  String   @db.Text
+  foundedYear      Int
+  updatedAt        DateTime @updatedAt
+}
+
+// 3. Misión, Visión, Valores y Procesos
+model AboutInfo {
+  id                   String   @id @default("default")
+  overviewHeadline     String
+  overviewDescription  String   @db.Text
+  overviewNote         String   @db.Text
+  
+  missionTitle         String
+  missionStatement     String   @db.Text
+  missionFocalPoints   String[] // Array de puntos focales en PostgreSQL
+  missionIsProvisional Boolean  @default(false)
+  
+  visionTitle          String
+  visionStatement      String   @db.Text
+  visionFocalPoints    String[] // Array de puntos focales en PostgreSQL
+  visionIsProvisional  Boolean  @default(false)
+
+  values               Json     // Array de objetos CoreValue
+  process              Json     // Array de pasos WorkStep
+
+  updatedAt            DateTime @updatedAt
+}
+
+// 4. Proyectos
+model Project {
+  id               String   @id // slug único ej: nexus-fleet
+  name             String
+  badge            String
+  shortDescription String   @db.Text
+  problemSolved    String   @db.Text
+  technologies     String[]
+  category         String
+  demoUrl          String?
+  repoUrl          String?
+  isProvisional    Boolean  @default(false)
+  gradient         String   @default("from-blue-600/30 via-cyan-500/20 to-emerald-500/10")
+  accentColor      String   @default("#0ea5e9")
+  icon             String   @default("Code2")
+  order            Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// 5. Servicios Ofrecidos
+model Service {
+  id            String   @id // slug único ej: software-a-medida
+  title         String
+  iconName      String   @default("Code2")
+  problemSolved String   @db.Text
+  description   String   @db.Text
+  highlights    String[]
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// 6. Miembros del Equipo
+model TeamMember {
+  id            String   @id
+  name          String
+  role          String
+  specialty     String   @db.Text
+  avatarText    String
+  image         String?
+  linkedinUrl   String?
+  githubUrl     String?
+  isProvisional Boolean  @default(false)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// 7. Canales de Contacto
+model ContactInfo {
+  id                 String   @id @default("default")
+  headline           String
+  subtitle           String   @db.Text
+  availabilityNotice String   @db.Text
+  channels           Json     // Array de canales de contacto
+  updatedAt          DateTime @updatedAt
+}

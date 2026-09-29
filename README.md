@@ -13,7 +13,10 @@ Desarrollado con una arquitectura moderna de componentes limpios, animaciones fl
 - **Estilos:** [Tailwind CSS](https://tailwindcss.com/)
 - **Animaciones:** [Motion para React](https://motion.dev/) (con soporte nativo para `prefers-reduced-motion`)
 - **Iconografía:** [Lucide React](https://lucide.dev/)
-- **Contenedores y Despliegue:** [Docker](https://www.docker.com/) (Multi-stage build) y Docker Compose
+- **Base de Datos & ORM:** [PostgreSQL 16](https://www.postgresql.org/) y [Prisma ORM](https://www.prisma.io/)
+- **Panel de Administración (CMS):** Dashboard integrado para edición de Misión, Visión, Proyectos, Empresa y Contacto sin tocar código
+- **Autenticación & Seguridad:** JSON Web Tokens (JWT) en cookies `HttpOnly`, y contraseñas protegidas con cifrado **PBKDF2-HMAC-SHA256** (100,000 iteraciones + Salt aleatorio criptográfico)
+- **Contenedores y Despliegue:** [Docker](https://www.docker.com/) (Multi-stage build) y Docker Compose con PostgreSQL persistente
 
 ---
 
@@ -129,16 +132,34 @@ El proyecto cuenta con un `Dockerfile` multi-etapa que optimiza el tamaño de la
 
 ---
 
-## ✏️ Personalización del Contenido
+---
 
-Todo el contenido textual, enlaces y canales de contacto están completamente centralizados en el directorio `src/data/`:
+## 🎛️ Panel de Administración (CMS Dinámico)
 
-- **Información y Eslogan:** Edita `src/data/company.ts`.
-- **Servicios:** Añade o modifica tarjetas en `src/data/services.ts`.
-- **Proyectos:** Actualiza el catálogo o añade enlaces reales en `src/data/projects.ts`.
-- **Misión, Visión y Metodología:** Ajusta los textos corporativos en `src/data/about.ts`.
-- **Equipo de Trabajo:** Modifica integrantes y enlaces en `src/data/team.ts`.
-- **Canales de Contacto:** Configura correos, números de WhatsApp y redes en `src/data/contact.ts`.
+El sitio cuenta con un panel de administración visual y seguro en la ruta `/admin` que permite al dueño o administrador actualizar el contenido sin tocar el código fuente:
+
+- **Ruta de acceso:** `http://localhost:3000/admin` (o `https://tudominio.com/admin`)
+- **Acceso directo:** Enlace discreto en el pie de página (footer) marcado como `CMS`.
+- **Credenciales iniciales por defecto:**
+  - **Usuario:** `admin`
+  - **Contraseña:** `AdminFrontera2026*Secure`
+  - *(Se recomienda cambiar la contraseña inmediatamente desde la pestaña "Seguridad & Contraseña" del panel).*
+
+### Módulos editables desde el panel:
+1. **Misión & Visión:** Titular general, declaración de misión, declaración de visión, puntos clave (bullets dinámicos) y estado provisorio/definitivo.
+2. **Catálogo de Proyectos:** Crear nuevos proyectos, editar nombres, categorías, badges, problemas resueltos, tecnologías (tags), enlaces demo/repo, y eliminar proyectos obsoletos.
+3. **Empresa & Contacto:** Slogan, descripción corporativa, correo electrónico, WhatsApp y cobertura.
+4. **Seguridad de la Cuenta:** Cambio de contraseña con verificación de la clave actual.
+
+---
+
+## 🔐 Arquitectura de Seguridad & Base de Datos
+
+- **Base de datos:** [PostgreSQL 16](https://www.postgresql.org/) con [Prisma ORM](https://www.prisma.io/) y contenedor dedicado en Docker Compose (`puerto 5433`).
+- **Autenticación:** [JSON Web Tokens (JWT)](https://jwt.io/) con algoritmo HS256 firmados con clave secreta y transmitidos en cookies **`HttpOnly`**, `Secure` y `SameSite=Lax` para prevenir ataques XSS y CSRF.
+- **Cifrado de contraseñas:** Algoritmo **PBKDF2-HMAC-SHA256** con **100,000 iteraciones** y Salt aleatorio criptográfico único por usuario (resiste ataques por diccionario, tablas arcoíris y fuerza bruta por GPU).
+- **Protección de Rutas:** Middleware en Next.js Edge para interceptar accesos no autorizados a `/admin/*` y redirigir con parámetro `?from=`.
+- **Cero datos quemados (No hardcoded):** El contenido se obtiene dinámicamente de PostgreSQL a través de Server Components en tiempo real con revalidación y fallback de alta disponibilidad.
 
 ---
 

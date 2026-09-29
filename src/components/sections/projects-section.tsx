@@ -15,21 +15,26 @@ import {
 import { Container } from "@/components/ui/container";
 import { SectionHeader } from "@/components/ui/section-header";
 import { MotionWrapper } from "@/components/motion/motion-wrapper";
-import { projectsData } from "@/data/projects";
+import { projectsData as defaultProjectsData, ProjectItem } from "@/data/projects";
 
-const iconMap = {
+const iconMap: Record<string, typeof Truck> = {
   Truck,
   Activity,
   TrendingUp,
   Box,
 };
 
-export function ProjectsSection() {
+interface ProjectsSectionProps {
+  projects?: ProjectItem[];
+}
+
+export function ProjectsSection({ projects = defaultProjectsData }: ProjectsSectionProps) {
+  const currentProjects = projects && projects.length > 0 ? projects : defaultProjectsData;
   const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
 
-  const total = projectsData.length;
+  const total = currentProjects.length;
 
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % total);
@@ -79,14 +84,14 @@ export function ProjectsSection() {
     touchEndX.current = null;
   };
 
-  const activeProject = projectsData[currentIndex];
+  const activeProject = currentProjects[currentIndex] || currentProjects[0];
   const IconComponent =
     iconMap[activeProject.visualTheme.icon as keyof typeof iconMap] || Laptop;
 
   return (
     <section
       id="proyectos"
-      className="py-20 md:py-28 relative bg-[#040710] overflow-hidden"
+      className="py-20 md:py-28 relative bg-transparent border-t border-slate-800/40 overflow-hidden"
       aria-label="Proyectos de software"
     >
       <Container>
@@ -238,7 +243,7 @@ export function ProjectsSection() {
 
             {/* Slide Indicators */}
             <div className="flex items-center gap-2" role="tablist" aria-label="Seleccionar proyecto">
-              {projectsData.map((project, idx) => (
+              {currentProjects.map((project, idx) => (
                 <button
                   key={project.id}
                   type="button"

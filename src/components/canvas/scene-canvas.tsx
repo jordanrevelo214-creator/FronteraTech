@@ -5,6 +5,12 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Logo3DModel } from "./logo-3d-model";
 
+// Deterministic pseudo-random helper
+function pseudoRand(seed: number) {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return x - Math.floor(x);
+}
+
 // Ambient particle dust ("estrellitas") - cyan, gold, and white
 function CosmicDust() {
   const pointsRef = useRef<THREE.Points>(null);
@@ -19,11 +25,11 @@ function CosmicDust() {
     const white = new THREE.Color("#f8fafc");
 
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 18;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 16;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 12 - 2;
+      pos[i * 3] = (pseudoRand(i * 3 + 1) - 0.5) * 18;
+      pos[i * 3 + 1] = (pseudoRand(i * 3 + 2) - 0.5) * 16;
+      pos[i * 3 + 2] = (pseudoRand(i * 3 + 3) - 0.5) * 12 - 2;
 
-      const rand = Math.random();
+      const rand = pseudoRand(i * 3 + 4);
       const c = rand < 0.45 ? cyan : rand < 0.7 ? gold : white;
       col[i * 3] = c.r;
       col[i * 3 + 1] = c.g;

@@ -13,7 +13,7 @@ import {
 import { Container } from "@/components/ui/container";
 import { SectionHeader } from "@/components/ui/section-header";
 import { MotionWrapper } from "@/components/motion/motion-wrapper";
-import { aboutData } from "@/data/about";
+import { aboutData as defaultAboutData, AboutData } from "@/data/about";
 
 const valueIcons = {
   ShieldCheck,
@@ -22,29 +22,36 @@ const valueIcons = {
   Users,
 };
 
-export function AboutSection() {
+interface AboutSectionProps {
+  data?: AboutData;
+}
+
+export function AboutSection({ data = defaultAboutData }: AboutSectionProps) {
+  const currentData = data || defaultAboutData;
   return (
     <section
       id="nosotros"
-      className="py-20 md:py-28 relative bg-[#060913] border-t border-slate-900"
+      className="py-20 md:py-28 relative bg-transparent border-t border-slate-800/40"
       aria-label="Acerca de Frontera Tech"
     >
       <Container>
         <SectionHeader
           badge="Sobre Frontera Tech"
           title="Quiénes somos y qué nos mueve"
-          description={aboutData.overview.headline}
+          description={currentData.overview.headline}
         />
 
         {/* Corporate Overview & Helper note */}
         <MotionWrapper delay={0.1}>
           <div className="max-w-3xl mx-auto text-center mb-16 space-y-4">
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-              {aboutData.overview.description}
+              {currentData.overview.description}
             </p>
-            <p className="text-xs text-slate-500 italic font-mono">
-              {aboutData.overview.noteProvisional}
-            </p>
+            {currentData.overview.noteProvisional && (
+              <p className="text-xs text-slate-500 italic font-mono">
+                {currentData.overview.noteProvisional}
+              </p>
+            )}
           </div>
         </MotionWrapper>
 
@@ -62,10 +69,10 @@ export function AboutSection() {
                   <Target className="w-6 h-6" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-4">
-                  {aboutData.mission.title}
+                  {currentData.mission.title}
                 </h3>
                 <p className="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-                  {aboutData.mission.statement}
+                  {currentData.mission.statement}
                 </p>
               </div>
 
@@ -74,7 +81,7 @@ export function AboutSection() {
                   Compromisos clave:
                 </p>
                 <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
-                  {aboutData.mission.focalPoints.map((item, idx) => (
+                  {currentData.mission.focalPoints.map((item, idx) => (
                     <li key={idx} className="flex items-center gap-2.5">
                       <CheckCircle2 className="w-4 h-4 text-sky-400 shrink-0" />
                       <span>{item}</span>
@@ -97,10 +104,10 @@ export function AboutSection() {
                   <Compass className="w-6 h-6" />
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-4">
-                  {aboutData.vision.title}
+                  {currentData.vision.title}
                 </h3>
                 <p className="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-                  {aboutData.vision.statement}
+                  {currentData.vision.statement}
                 </p>
               </div>
 
@@ -109,7 +116,7 @@ export function AboutSection() {
                   Horizontes estratégicos:
                 </p>
                 <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
-                  {aboutData.vision.focalPoints.map((item, idx) => (
+                  {currentData.vision.focalPoints.map((item, idx) => (
                     <li key={idx} className="flex items-center gap-2.5">
                       <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
                       <span>{item}</span>
@@ -133,8 +140,8 @@ export function AboutSection() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {aboutData.values.map((val, idx) => {
-              const IconComp = valueIcons[val.iconName] || Sparkles;
+            {currentData.values.map((val, idx) => {
+              const IconComp = (valueIcons as Record<string, typeof Sparkles>)[val.iconName] || Sparkles;
               return (
                 <MotionWrapper key={val.title} delay={idx * 0.08}>
                   <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800/80 hover:border-slate-700 transition-colors h-full flex flex-col">
@@ -166,7 +173,7 @@ export function AboutSection() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {aboutData.process.map((step) => (
+            {currentData.process.map((step) => (
               <div
                 key={step.step}
                 className="relative p-5 rounded-2xl bg-slate-900/50 border border-slate-800"

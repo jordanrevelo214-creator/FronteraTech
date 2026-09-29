@@ -6,8 +6,18 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SceneCanvas } from "./scene-canvas";
+import dynamic from "next/dynamic";
 import { StaticFallback } from "./static-fallback";
+
+const SceneCanvas = dynamic(
+  () => import("./scene-canvas").then((mod) => mod.SceneCanvas),
+  { ssr: false }
+);
+
+const CosmicStarsCursor = dynamic(
+  () => import("./cosmic-stars-cursor").then((mod) => mod.CosmicStarsCursor),
+  { ssr: false }
+);
 
 export function ScrollExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -132,6 +142,9 @@ export function ScrollExperience() {
 
         {/* Luminous Core Halo behind 3D Hexagon */}
         <div className="absolute top-[32%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] bg-sky-500/10 rounded-full blur-[100px] pointer-events-none -z-10" />
+
+        {/* Luz interactiva que sigue el cursor + Campo estelar de fondo */}
+        <CosmicStarsCursor />
 
         {/* 3D WebGL Canvas Layer (Three.js + R3F) */}
         <SceneCanvas progress={progress} />

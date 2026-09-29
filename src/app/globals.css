@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #060913;
+  --background: #020716;
   --foreground: #f1f5f9;
   --primary: #0284c7;
   --primary-glow: #38bdf8;
@@ -31,7 +31,11 @@ html {
 }
 
 body {
-  background-color: var(--background);
+  background-color: #020716;
+  background-image: radial-gradient(circle at 50% 25%, #071b48 0%, #030d25 45%, #010511 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   overflow-x: hidden;

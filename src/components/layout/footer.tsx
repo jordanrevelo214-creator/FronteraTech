@@ -12,7 +12,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#03060f] border-t border-slate-800/80 pt-16 pb-12 text-slate-400">
+    <footer className="bg-[#020510]/85 backdrop-blur-md border-t border-slate-800/40 pt-16 pb-12 text-slate-400">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800/60">
           {/* Brand info */}
@@ -115,9 +115,18 @@ export function Footer() {
           <p>
             &copy; {currentYear} {companyData.name}. Todos los derechos reservados.
           </p>
-          <p className="font-mono text-[11px] text-slate-500">
-            {companyData.tagline}
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="font-mono text-[11px] text-slate-500">
+              {companyData.tagline}
+            </p>
+            <a
+              href="/admin"
+              className="text-slate-600 hover:text-sky-400 transition-colors text-[11px] flex items-center gap-1"
+              title="Panel de Administración"
+            >
+              <span>• CMS</span>
+            </a>
+          </div>
         </div>
       </Container>
     </footer>

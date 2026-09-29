@@ -12,7 +12,7 @@ export function ContactSection() {
   return (
     <section
       id="contacto"
-      className="py-20 md:py-28 relative bg-[#060913] border-t border-slate-900"
+      className="py-20 md:py-28 relative bg-transparent border-t border-slate-800/40"
       aria-label="Información de contacto"
     >
       <Container>
