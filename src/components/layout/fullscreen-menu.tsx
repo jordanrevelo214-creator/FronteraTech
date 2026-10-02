@@ -264,7 +264,7 @@ export function FullscreenMenu({ isOpen, onClose }: CrystalMenuProps) {
         {/* FOOTER DEL CRISTAL: ACCESO ADMINISTRADOR & DATOS CORPORATIVOS */}
         {/* ======================================================== */}
         <div className="pt-4 border-t border-slate-700/60 space-y-2.5 relative z-10">
-          <Link
+          <a
             href="/admin/login"
             onClick={onClose}
             className={`flex items-center rounded-2xl bg-slate-900/80 hover:bg-sky-950/40 text-slate-200 hover:text-white border border-slate-800 hover:border-sky-500/50 shadow-sm transition-all group ${
@@ -283,7 +283,7 @@ export function FullscreenMenu({ isOpen, onClose }: CrystalMenuProps) {
             {!isCollapsed && (
               <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-sky-400 transition-colors" />
             )}
-          </Link>
+          </a>
 
           {!isCollapsed && (
             <div className="px-1 text-[11px] text-slate-400 flex items-center justify-between pt-1">

@@ -86,14 +86,14 @@ export function MinimalNavbar() {
 
         {/* Top-Right: 'Iniciar Sesión' + 'Hablemos ↗' with golden border + 'Menú ☰' button */}
         <div className="pointer-events-auto flex items-center gap-2 sm:gap-3">
-          <Link
+          <a
             href="/admin/login"
             className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-300 hover:text-white bg-[#030d24]/70 border border-slate-700/80 hover:border-sky-500/60 hover:bg-sky-500/10 backdrop-blur-md transition-all shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
             title="Iniciar Sesión de Administrador"
           >
             <LogIn className="w-3.5 h-3.5 text-sky-400" />
             <span className="hidden xs:inline sm:inline">Iniciar Sesión</span>
-          </Link>
+          </a>
 
           <Link
             href="#contacto"

@@ -4,6 +4,7 @@ import "./globals.css";
 import { MinimalNavbar } from "@/components/layout/minimal-navbar";
 import { Footer } from "@/components/layout/footer";
 import { ConditionalFooter } from "@/components/layout/conditional-footer";
+import { GlobalCosmicBackground } from "@/components/layout/global-cosmic-background";
 import { companyData } from "@/data/company";
 
 const geistSans = Geist({
@@ -56,9 +57,10 @@ export default function RootLayout({
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable} scroll-smooth`}
     >
-      <body className="min-h-screen flex flex-col text-slate-100 antialiased selection:bg-sky-500/30 selection:text-white overflow-x-hidden">
+      <body className="min-h-screen flex flex-col text-slate-100 antialiased selection:bg-sky-500/30 selection:text-white overflow-x-hidden relative bg-[#020617]">
+        <GlobalCosmicBackground />
         <MinimalNavbar />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 relative z-10">{children}</main>
         <ConditionalFooter>
           <Footer />
         </ConditionalFooter>

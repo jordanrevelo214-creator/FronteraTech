@@ -8,11 +8,14 @@ import { TeamMember } from "@/data/team";
 import { CompanyInfo } from "@/data/company";
 import { ContactData } from "@/data/contact";
 
+let isDatabaseSeeded = false;
+
 /**
  * Asegura que la base de datos tenga el usuario administrador inicial
  * y todos los datos iniciales sembrados (seeding).
  */
 export async function ensureDatabaseSeeded() {
+  if (isDatabaseSeeded) return;
   try {
     // 1. Asegurar usuario administrador inicial
     const adminUser = await prisma.user.findFirst();
@@ -151,6 +154,8 @@ export async function ensureDatabaseSeeded() {
         },
       });
     }
+
+    isDatabaseSeeded = true;
   } catch (error) {
     console.warn("[ensureDatabaseSeeded] Nota de conexión a BD:", error);
   }

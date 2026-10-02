@@ -115,7 +115,7 @@ export default function AdminDashboardPage() {
     try {
       const meRes = await fetch("/api/auth/me");
       if (!meRes.ok) {
-        router.push("/admin/login");
+        window.location.href = "/admin/login";
         return;
       }
 
@@ -543,8 +543,7 @@ export default function AdminDashboardPage() {
   // Cerrar Sesión
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/admin/login");
-    router.refresh();
+    window.location.href = "/admin/login";
   };
 
   if (loading) {

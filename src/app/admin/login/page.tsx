@@ -33,12 +33,12 @@ export default function AdminLoginPage() {
         throw new Error(data.error || "Credenciales incorrectas");
       }
 
-      router.push("/admin");
-      router.refresh();
+      // Redirección directa para enviar inmediatamente la nueva cookie HttpOnly
+      // y evitar la condición de carrera con router.refresh() que congela Next.js en 'Rendering...'
+      window.location.href = "/admin";
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error inesperado al iniciar sesión";
       setError(msg);
-    } finally {
       setLoading(false);
     }
   };
