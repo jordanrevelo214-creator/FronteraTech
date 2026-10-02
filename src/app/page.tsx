@@ -8,15 +8,21 @@ import { ContactSection } from "@/components/sections/contact-section";
 import {
   getAboutData,
   getProjectsData,
+  getServicesData,
+  getTeamData,
+  getContactData,
 } from "@/lib/content/data-service";
 
 // Forzar revalidación dinámica para reflejar de inmediato los cambios del CMS
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const [aboutData, projectsData] = await Promise.all([
+  const [aboutData, projectsData, servicesData, teamData, contactData] = await Promise.all([
     getAboutData(),
     getProjectsData(),
+    getServicesData(),
+    getTeamData(),
+    getContactData(),
   ]);
 
   return (
@@ -28,11 +34,11 @@ export default async function Home() {
       <CapabilitiesPreview />
 
       {/* 3. Corporate sections for exploration */}
-      <ServicesSection />
+      <ServicesSection services={servicesData} />
       <ProjectsSection projects={projectsData} />
       <AboutSection data={aboutData} />
-      <TeamSection />
-      <ContactSection />
+      <TeamSection team={teamData} />
+      <ContactSection contact={contactData} />
     </>
   );
 }

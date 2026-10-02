@@ -2,12 +2,16 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, User, ShieldCheck, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { User, Lock, Eye, EyeOff, AlertCircle, Loader2 } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -26,10 +30,9 @@ export default function AdminLoginPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Error al autenticar");
+        throw new Error(data.error || "Credenciales incorrectas");
       }
 
-      // Redirigir al panel de administración
       router.push("/admin");
       router.refresh();
     } catch (err: unknown) {
@@ -41,117 +44,234 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#04060d] text-slate-100 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Luces de fondo ambientales */}
-      <div className="absolute top-1/4 left-1/3 -translate-x-1/2 w-96 h-96 bg-sky-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/3 translate-x-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
+    <div
+      className="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden select-none"
+      style={{
+        backgroundColor: "#020716",
+        backgroundImage: `
+          radial-gradient(circle at 50% 25%, rgba(14, 165, 233, 0.22) 0%, rgba(2, 6, 23, 0.88) 65%, #01040d 100%),
+          url('/images/intro-bg.png')
+        `,
+        backgroundPosition: "center bottom",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Resplandores cósmicos ambientales con colores Frontera Tech */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[450px] bg-sky-500/15 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-1/4 w-[380px] h-[300px] bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="w-full max-w-md relative z-10">
-        {/* Encabezado de marca */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500/20 to-indigo-500/20 border border-sky-500/30 text-sky-400 mb-4 shadow-lg shadow-sky-950/40">
-            <ShieldCheck className="w-7 h-7" />
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-white font-sans">
-            Frontera<span className="text-sky-400">Tech</span> CMS
-          </h1>
-          <p className="text-xs text-slate-400 mt-1.5">
-            Panel de Administración • Acceso Criptográfico Seguro
-          </p>
-        </div>
+      {/* Silueta de niebla ambiental */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#01040d] via-transparent to-transparent opacity-80 pointer-events-none" />
 
-        {/* Tarjeta de Login */}
-        <div className="rounded-3xl bg-slate-900/80 border border-slate-800/80 backdrop-blur-xl p-8 shadow-2xl shadow-black/80">
-          <div className="flex items-center justify-between pb-6 mb-6 border-b border-slate-800">
-            <div>
-              <h2 className="text-lg font-semibold text-white">Iniciar Sesión</h2>
-              <p className="text-xs text-slate-400">Introduce tus credenciales de administrador</p>
+      {/* Botón superior discreto para volver al sitio web sin chocar con nada */}
+      <div className="absolute top-6 left-6 z-20">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/60 hover:bg-slate-800/80 border border-slate-700/60 text-xs font-medium text-slate-300 hover:text-white backdrop-blur-md transition-all shadow-sm"
+        >
+          ← Volver al sitio principal
+        </Link>
+      </div>
+
+      {/* ======================================================== */}
+      {/* TARJETA GLASSMORPHISM EXACTA AL DISEÑO */}
+      {/* ======================================================== */}
+      <div className="w-full max-w-[400px] relative z-10 animate-in fade-in zoom-in-95 duration-400">
+        <div
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.12) 100%)",
+            backdropFilter: "blur(24px) saturate(190%)",
+            WebkitBackdropFilter: "blur(24px) saturate(190%)",
+            border: "1.5px solid rgba(255, 255, 255, 0.42)",
+            boxShadow: `
+              0 30px 60px -15px rgba(0, 0, 0, 0.65),
+              0 15px 30px -10px rgba(0, 0, 0, 0.4),
+              inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.55),
+              inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.15),
+              0 0 25px -4px rgba(14, 165, 233, 0.25)
+            `,
+          }}
+          className="relative rounded-[32px] pt-0 pb-8 px-7 sm:px-8 text-white shadow-2xl overflow-hidden"
+        >
+          {/* Pestaña superior recortada 'Login' (exacta al mockup de referencia) */}
+          <div className="flex justify-center -mt-[1.5px] mb-6">
+            <div
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(230, 240, 255, 0.72) 100%)",
+                backdropFilter: "blur(16px)",
+                borderBottom: "1px solid rgba(255, 255, 255, 0.6)",
+                borderLeft: "1px solid rgba(255, 255, 255, 0.5)",
+                borderRight: "1px solid rgba(255, 255, 255, 0.5)",
+                boxShadow: "0 6px 18px rgba(0, 0, 0, 0.12), inset 0 -1px 1px rgba(0, 0, 0, 0.05)",
+              }}
+              className="px-8 py-2 rounded-b-2xl"
+            >
+              <span className="font-extrabold text-sm sm:text-base tracking-tight text-slate-800">
+                Login
+              </span>
             </div>
-            <span className="text-[10px] font-mono px-2 py-1 rounded bg-slate-800 text-sky-400 border border-slate-700">
-              JWT + SHA-256
-            </span>
           </div>
 
+          {/* Logo Frontera Tech sutil integrado */}
+          <div className="flex justify-center mb-6">
+            <Link
+              href="/"
+              className="inline-block transition-transform hover:scale-105"
+              title="Volver a Frontera Tech"
+            >
+              <Image
+                src="/images/brand_navbar_logo.png"
+                alt="Frontera Tech"
+                width={150}
+                height={38}
+                className="h-7 w-auto object-contain drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]"
+                priority
+              />
+            </Link>
+          </div>
+
+          {/* Alerta de Error */}
           {error && (
-            <div className="mb-6 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs flex items-center gap-2.5">
-              <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+            <div className="mb-5 p-3 rounded-2xl bg-rose-500/20 border border-rose-400/40 text-rose-200 text-xs flex items-center gap-2 animate-shake">
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-300" />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Usuario Administrador
+          {/* Formulario */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Campo Username */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-slate-200 pl-2">
+                Username
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <User className="w-4 h-4" />
-                </div>
+              <div
+                style={{
+                  background: "rgba(255, 255, 255, 0.14)",
+                  border: "1.2px solid rgba(255, 255, 255, 0.45)",
+                  boxShadow: "inset 0 1px 2px rgba(0, 0, 0, 0.12)",
+                }}
+                className="relative rounded-full flex items-center px-4 py-2.5 transition-all focus-within:border-sky-400 focus-within:bg-white/20 focus-within:shadow-[0_0_15px_rgba(14,165,233,0.3)]"
+              >
                 <input
                   type="text"
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="admin"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-colors"
+                  className="w-full bg-transparent text-sm text-white placeholder-slate-400 focus:outline-none pr-8 font-medium"
                 />
+                {/* Icono a la derecha exacto al diseño */}
+                <div className="absolute right-4 text-slate-300 pointer-events-none">
+                  <User className="w-4 h-4" />
+                </div>
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
-                Contraseña
+            {/* Campo Password */}
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-slate-200 pl-2">
+                Password
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <Lock className="w-4 h-4" />
-                </div>
+              <div
+                style={{
+                  background: "rgba(255, 255, 255, 0.14)",
+                  border: "1.2px solid rgba(255, 255, 255, 0.45)",
+                  boxShadow: "inset 0 1px 2px rgba(0, 0, 0, 0.12)",
+                }}
+                className="relative rounded-full flex items-center px-4 py-2.5 transition-all focus-within:border-sky-400 focus-within:bg-white/20 focus-within:shadow-[0_0_15px_rgba(14,165,233,0.3)]"
+              >
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-950/70 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-colors"
+                  placeholder="••••••••"
+                  className="w-full bg-transparent text-sm text-white placeholder-slate-400 focus:outline-none pr-8 font-medium tracking-wider"
                 />
+                {/* Icono interactivo a la derecha con alternar visibilidad */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                  title={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Lock className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-2 py-3 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-medium text-sm transition-all duration-200 shadow-lg shadow-sky-600/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Verificando credenciales...</span>
-                </>
-              ) : (
-                <>
-                  <span>Ingresar al Administrador</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
+            {/* Fila Remember me & Forgot password */}
+            <div className="flex items-center justify-between text-xs text-slate-200 pt-1 px-1">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded border-white/50 bg-white/20 text-sky-500 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-sky-500"
+                />
+                <span className="hover:text-white transition-colors">Remember me</span>
+              </label>
+
+              <button
+                type="button"
+                onClick={() =>
+                  alert(
+                    "Si olvidaste tus credenciales, contáctate con el administrador de sistemas de Frontera Tech en contacto@fronteratech.com"
+                  )
+                }
+                className="text-slate-300 hover:text-sky-300 transition-colors cursor-pointer text-right"
+              >
+                Forgot password?
+              </button>
+            </div>
+
+            {/* Botón Login Pill redondeado exacto a la imagen */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(228, 238, 252, 0.88) 100%)",
+                  boxShadow: "0 8px 24px -4px rgba(0, 0, 0, 0.25), inset 0 1px 1px white",
+                }}
+                className="w-full py-3 rounded-full text-slate-900 font-bold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-white"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-slate-900" />
+                    <span>Verificando...</span>
+                  </>
+                ) : (
+                  <span>Login</span>
+                )}
+              </button>
+            </div>
           </form>
 
-          <div className="mt-6 pt-5 border-t border-slate-800/80 text-center">
-            <p className="text-[11px] text-slate-500">
-              Cifrado PBKDF2-HMAC-SHA256 con 100,000 iteraciones y Salt dinámico.
+          {/* Pie de tarjeta seguro sin registro externo */}
+          <div className="text-center pt-4 mt-4 border-t border-white/15">
+            <p className="text-[11px] text-slate-300/80 mb-3">
+              Acceso exclusivo para el equipo autorizado de Frontera Tech
             </p>
-          </div>
-        </div>
 
-        {/* Volver al sitio */}
-        <div className="text-center mt-6">
-          <a
-            href="/"
-            className="text-xs text-slate-400 hover:text-sky-400 transition-colors"
-          >
-            ← Volver a la página principal de Frontera Tech
-          </a>
+            <div>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-xs text-slate-200 hover:text-white transition-all"
+              >
+                ← Volver al sitio principal
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>

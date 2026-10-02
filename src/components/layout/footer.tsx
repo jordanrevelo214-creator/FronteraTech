@@ -8,8 +8,18 @@ import { navigationItems } from "@/data/navigation";
 import { companyData } from "@/data/company";
 import { contactData } from "@/data/contact";
 
-export function Footer() {
+import { getCompanyData, getContactData } from "@/lib/content/data-service";
+
+export async function Footer() {
   const currentYear = new Date().getFullYear();
+  const [company, contact] = await Promise.all([
+    getCompanyData(),
+    getContactData(),
+  ]);
+
+  const emailChannel = contact.channels?.find((c) => c.type === "email");
+  const linkedinChannel = contact.channels?.find((c) => c.type === "linkedin");
+  const whatsappChannel = contact.channels?.find((c) => c.type === "whatsapp");
 
   return (
     <footer className="bg-[#020510]/85 backdrop-blur-md border-t border-slate-800/40 pt-16 pb-12 text-slate-400">
@@ -31,11 +41,11 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm text-slate-400 max-w-md leading-relaxed">
-              {companyData.shortDescription}
+              {company.shortDescription || companyData.shortDescription}
             </p>
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="https://linkedin.com/company/frontera-tech"
+                href={linkedinChannel?.href || "https://linkedin.com/company/frontera-tech"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-sky-500/40 hover:bg-slate-800 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
@@ -43,17 +53,19 @@ export function Footer() {
               >
                 <LinkedinIcon className="w-4 h-4" />
               </a>
+              {whatsappChannel?.href && (
+                <a
+                  href={whatsappChannel.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 hover:bg-slate-800 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                  aria-label="WhatsApp directo de Frontera Tech"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                </a>
+              )}
               <a
-                href="https://github.com/frontera-tech"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-sky-500/40 hover:bg-slate-800 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
-                aria-label="Organización de GitHub de Frontera Tech"
-              >
-                <GithubIcon className="w-4 h-4" />
-              </a>
-              <a
-                href="mailto:contacto@fronteratech.com"
+                href={emailChannel?.href || "mailto:contacto@fronteratech.com"}
                 className="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:border-sky-500/40 hover:bg-slate-800 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
                 aria-label="Enviar correo electrónico a Frontera Tech"
               >

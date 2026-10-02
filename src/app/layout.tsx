@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { MinimalNavbar } from "@/components/layout/minimal-navbar";
 import { Footer } from "@/components/layout/footer";
+import { ConditionalFooter } from "@/components/layout/conditional-footer";
 import { companyData } from "@/data/company";
 
 const geistSans = Geist({
@@ -58,7 +59,9 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col text-slate-100 antialiased selection:bg-sky-500/30 selection:text-white overflow-x-hidden">
         <MinimalNavbar />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <ConditionalFooter>
+          <Footer />
+        </ConditionalFooter>
       </body>
     </html>
   );

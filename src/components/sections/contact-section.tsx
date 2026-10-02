@@ -6,9 +6,15 @@ import { LinkedinIcon } from "@/components/ui/icons";
 import { Container } from "@/components/ui/container";
 import { SectionHeader } from "@/components/ui/section-header";
 import { MotionWrapper } from "@/components/motion/motion-wrapper";
-import { contactData } from "@/data/contact";
+import { contactData as defaultContactData, ContactData } from "@/data/contact";
 
-export function ContactSection() {
+interface ContactSectionProps {
+  contact?: ContactData;
+}
+
+export function ContactSection({ contact }: ContactSectionProps) {
+  const currentContact = contact || defaultContactData;
+
   return (
     <section
       id="contacto"
@@ -18,8 +24,8 @@ export function ContactSection() {
       <Container>
         <SectionHeader
           badge="Inicia la Conversación"
-          title="Conversemos sobre tu próximo desarrollo"
-          description={contactData.subtitle}
+          title={currentContact.headline || "Conversemos sobre tu próximo desarrollo"}
+          description={currentContact.subtitle}
         />
 
         {/* Central Card with Direct Channels */}
@@ -32,7 +38,7 @@ export function ContactSection() {
                   <Clock className="w-4 h-4" />
                 </div>
                 <p className="text-xs sm:text-sm text-sky-200">
-                  {contactData.availabilityNotice}
+                  {currentContact.availabilityNotice}
                 </p>
               </div>
               <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
@@ -43,7 +49,7 @@ export function ContactSection() {
 
           {/* Contact Channels Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {contactData.channels.map((channel, index) => {
+            {currentContact.channels.map((channel, index) => {
               const isExternal =
                 channel.href.startsWith("http") || channel.href.startsWith("mailto:");
 

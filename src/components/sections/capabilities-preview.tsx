@@ -26,9 +26,6 @@ function InteractiveSolutionCard({
 }: SolutionCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
-  const [glowPos, setGlowPos] = useState({ x: 50, y: 50 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -42,13 +39,13 @@ function InteractiveSolutionCard({
     // Calcular inclinación 3D para el icono
     const rotX = ((y - centerY) / centerY) * -16;
     const rotY = ((x - centerX) / centerX) * 16;
+    const glowX = (x / rect.width) * 100;
+    const glowY = (y / rect.height) * 100;
 
-    setRotateX(rotX);
-    setRotateY(rotY);
-    setGlowPos({
-      x: (x / rect.width) * 100,
-      y: (y / rect.height) * 100,
-    });
+    cardRef.current.style.setProperty("--rot-x", `${rotX.toFixed(2)}deg`);
+    cardRef.current.style.setProperty("--rot-y", `${rotY.toFixed(2)}deg`);
+    cardRef.current.style.setProperty("--glow-x", `${glowX.toFixed(1)}%`);
+    cardRef.current.style.setProperty("--glow-y", `${glowY.toFixed(1)}%`);
   };
 
   const handleMouseEnter = () => {
@@ -57,8 +54,12 @@ function InteractiveSolutionCard({
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setRotateX(0);
-    setRotateY(0);
+    if (cardRef.current) {
+      cardRef.current.style.setProperty("--rot-x", "0deg");
+      cardRef.current.style.setProperty("--rot-y", "0deg");
+      cardRef.current.style.setProperty("--glow-x", "50%");
+      cardRef.current.style.setProperty("--glow-y", "50%");
+    }
   };
 
   const isActive = isHovered || (!isHovered && isActiveDefault);
@@ -81,7 +82,7 @@ function InteractiveSolutionCard({
         className="absolute inset-0 pointer-events-none transition-opacity duration-300"
         style={{
           opacity: isHovered ? 0.35 : isActiveDefault ? 0.15 : 0,
-          background: `radial-gradient(circle 240px at ${glowPos.x}% ${glowPos.y}%, rgba(14, 165, 233, 0.4), transparent 70%)`,
+          background: `radial-gradient(circle 240px at var(--glow-x, 50%) var(--glow-y, 50%), rgba(14, 165, 233, 0.4), transparent 70%)`,
         }}
       />
 
@@ -110,10 +111,10 @@ function InteractiveSolutionCard({
 
         {/* Imagen del icono 3D con transformación de perspectiva y elevación */}
         <div
-          className="relative w-full h-full max-w-[280px] transition-transform duration-150 ease-out flex items-center justify-center"
+          className="relative w-full h-full max-w-[280px] transition-transform duration-100 ease-out flex items-center justify-center will-change-transform"
           style={{
             transform: isHovered
-              ? `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.08) translateY(-4px)`
+              ? `perspective(800px) rotateX(var(--rot-x, 0deg)) rotateY(var(--rot-y, 0deg)) scale(1.08) translateY(-4px)`
               : "perspective(800px) rotateX(0deg) rotateY(0deg) scale(1) translateY(0)",
             transformStyle: "preserve-3d",
           }}

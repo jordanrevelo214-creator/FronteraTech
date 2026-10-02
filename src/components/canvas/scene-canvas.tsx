@@ -65,10 +65,11 @@ function CosmicDust() {
 }
 
 interface SceneCanvasProps {
-  progress: number;
+  progress?: number;
+  progressRef?: React.RefObject<number | null>;
 }
 
-export function SceneCanvas({ progress }: SceneCanvasProps) {
+export function SceneCanvas({ progress = 0, progressRef }: SceneCanvasProps) {
   return (
     <div className="absolute inset-0 w-full h-full pointer-events-none">
       <Canvas
@@ -109,7 +110,7 @@ export function SceneCanvas({ progress }: SceneCanvasProps) {
 
         {/* 3D Model positioned in upper half matching inicio.png */}
         <group position={[0, 1.02, 0]}>
-          <Logo3DModel progress={progress} />
+          <Logo3DModel progress={progress} progressRef={progressRef} />
         </group>
 
         {/* Cosmic Ambient Starlight Particles */}

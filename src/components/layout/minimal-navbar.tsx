@@ -3,39 +3,57 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { ArrowUpRight, LogIn } from "lucide-react";
 import { FullscreenMenu } from "./fullscreen-menu";
 
 export function MinimalNavbar() {
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
 
-      // Detectar si está scrolleado
-      setIsScrolled(currentScrollY > 40);
+          // Detectar si está scrolleado
+          setIsScrolled((prev) => {
+            const next = currentScrollY > 40;
+            return prev !== next ? next : prev;
+          });
 
-      // Si está casi en la cima, siempre visible
-      if (currentScrollY < 60) {
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY.current + 8) {
-        // Haciendo scroll hacia abajo -> Ocultar header
-        setIsVisible(false);
-      } else if (currentScrollY < lastScrollY.current - 8) {
-        // Haciendo scroll hacia arriba -> Mostrar header
-        setIsVisible(true);
+          // Si está casi en la cima, siempre visible
+          if (currentScrollY < 60) {
+            setIsVisible(true);
+          } else if (currentScrollY > lastScrollY.current + 12) {
+            // Haciendo scroll hacia abajo -> Ocultar header
+            setIsVisible(false);
+          } else if (currentScrollY < lastScrollY.current - 12) {
+            // Haciendo scroll hacia arriba -> Mostrar header
+            setIsVisible(true);
+          }
+
+          lastScrollY.current = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
       }
-
-      lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // No renderizar la barra pública en rutas de administración (después de ejecutar todos los hooks)
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <>

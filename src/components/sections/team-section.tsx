@@ -6,9 +6,15 @@ import { LinkedinIcon, GithubIcon } from "@/components/ui/icons";
 import { Container } from "@/components/ui/container";
 import { SectionHeader } from "@/components/ui/section-header";
 import { MotionWrapper } from "@/components/motion/motion-wrapper";
-import { teamData } from "@/data/team";
+import { teamData, TeamMember } from "@/data/team";
 
-export function TeamSection() {
+interface TeamSectionProps {
+  team?: TeamMember[];
+}
+
+export function TeamSection({ team = teamData }: TeamSectionProps) {
+  const members = team && team.length > 0 ? team : teamData;
+
   return (
     <section
       id="equipo"
@@ -23,18 +29,28 @@ export function TeamSection() {
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {teamData.map((member, index) => (
+          {members.map((member, index) => (
             <MotionWrapper key={member.id} delay={index * 0.08} className="h-full">
               <div className="h-full flex flex-col justify-between rounded-2xl bg-slate-900/50 border border-slate-800/80 p-6 hover:border-sky-500/40 transition-all duration-300 group hover:shadow-xl hover:shadow-sky-950/20">
                 <div>
                   {/* Photo or Neutral Avatar Placeholder */}
                   <div className="w-full aspect-square rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/60 flex flex-col items-center justify-center relative overflow-hidden mb-5 group-hover:scale-[1.02] transition-transform duration-300">
-                    <div className="w-16 h-16 rounded-full bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 font-bold text-lg mb-2">
-                      {member.avatarText || <User className="w-6 h-6" />}
-                    </div>
-                    <span className="text-[11px] font-mono text-slate-400 uppercase tracking-widest">
-                      {member.isProvisional ? "Perfil Técnico" : "Integrante"}
-                    </span>
+                    {member.image ? (
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <>
+                        <div className="w-16 h-16 rounded-full bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 font-bold text-lg mb-2">
+                          {member.avatarText || <User className="w-6 h-6" />}
+                        </div>
+                        <span className="text-[11px] font-mono text-slate-400 uppercase tracking-widest">
+                          {member.isProvisional ? "Perfil Técnico" : "Integrante"}
+                        </span>
+                      </>
+                    )}
                   </div>
 
                   {/* Name and Role */}

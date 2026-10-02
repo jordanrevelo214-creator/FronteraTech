@@ -19,10 +19,11 @@ import {
 } from "./logo-shapes";
 
 interface Logo3DModelProps {
-  progress: number;
+  progress?: number;
+  progressRef?: React.RefObject<number | null>;
 }
 
-export function Logo3DModel({ progress }: Logo3DModelProps) {
+export function Logo3DModel({ progress = 0, progressRef }: Logo3DModelProps) {
   const groupRef = useRef<THREE.Group>(null);
 
   // Mesh individual refs
@@ -134,7 +135,8 @@ export function Logo3DModel({ progress }: Logo3DModelProps) {
   // Frame update: Smooth interpolation driven by scroll progress + subtle idle floating
   useFrame((state, delta) => {
     const t = state.clock.getElapsedTime();
-    const p = Math.max(0, Math.min(1, progress));
+    const currentP = progressRef?.current != null ? progressRef.current : (progress ?? 0);
+    const p = Math.max(0, Math.min(1, currentP));
 
     // Idle breathing/floating
     const idleY = Math.sin(t * 1.4) * 0.035;

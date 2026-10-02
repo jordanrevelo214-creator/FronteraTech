@@ -125,6 +125,8 @@ export const servicesSlides: ServiceSlide[] = [
   },
 ];
 
+import { ServiceItem } from "@/data/services";
+
 const iconMap = {
   Code2,
   Globe,
@@ -134,9 +136,33 @@ const iconMap = {
   Cloud,
 };
 
-export function ServicesSection() {
+interface ServicesSectionProps {
+  services?: ServiceItem[];
+}
+
+export function ServicesSection({ services }: ServicesSectionProps) {
+  const slides: ServiceSlide[] = (services && services.length > 0)
+    ? services.map((s, idx) => {
+        const def = servicesSlides.find((d) => d.id === s.id) || servicesSlides[idx % servicesSlides.length];
+        return {
+          id: s.id,
+          number: String(idx + 1).padStart(2, "0"),
+          tag: def?.tag || s.title.toUpperCase(),
+          shortName: def?.shortName || s.title,
+          iconName: (s.iconName as "Code2" | "Globe" | "Smartphone" | "Cpu" | "Wrench" | "Cloud") || "Code2",
+          headlinePart1: def?.headlinePart1 || s.title,
+          headlinePart2: def?.headlinePart2 || "",
+          description: s.description,
+          problemSolved: s.problemSolved,
+          benefits: s.highlights && s.highlights.length > 0 ? s.highlights : (def?.benefits || []),
+          imageSrc: def?.imageSrc || `/images/service-3d-0${(idx % 6) + 1}.png`,
+          imageAlt: def?.imageAlt || s.title,
+        };
+      })
+    : servicesSlides;
+
   const [currentIndex, setCurrentIndex] = useState(0);
-  const total = servicesSlides.length;
+  const total = slides.length;
 
   const carouselRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
@@ -202,13 +228,13 @@ export function ServicesSection() {
     mouseStartX.current = null;
   };
 
-  const currentSlide = servicesSlides[currentIndex];
+  const currentSlide = slides[currentIndex] || slides[0];
   const IconComponent = iconMap[currentSlide.iconName] || Code2;
 
   return (
     <section
       id="servicios"
-      className="relative z-10 py-6 sm:py-8 lg:py-10 min-h-screen lg:max-h-[920px] flex flex-col justify-center text-white overflow-hidden scroll-mt-20"
+      className="relative z-10 py-5 sm:py-7 md:py-8 flex flex-col justify-center text-white overflow-hidden scroll-mt-16"
       aria-label="Ingeniería que mueve tu empresa"
       tabIndex={0}
       onKeyDown={handleKeyDown}
@@ -217,28 +243,28 @@ export function ServicesSection() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[450px] bg-sky-500/10 rounded-full blur-[130px] pointer-events-none -z-10" />
 
       <Container className="relative z-20">
-        {/* Encabezado exacto de Carrusel.png (proporciones compactas para caber en 1 pantalla) */}
-        <div className="mb-3 sm:mb-4 lg:mb-5">
+        {/* Encabezado compacto y visible completo */}
+        <div className="mb-2.5 sm:mb-3.5">
           {/* Badge: Línea naranja-dorada + NUESTRAS SOLUCIONES */}
-          <div className="flex items-center gap-2.5 mb-1.5">
-            <span className="w-6 h-[2px] bg-[#f59e0b] rounded-full inline-block" />
-            <span className="font-mono text-[11px] sm:text-xs font-bold tracking-[0.22em] text-[#f59e0b] uppercase">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-5 h-[2px] bg-[#f59e0b] rounded-full inline-block" />
+            <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-[0.2em] text-[#f59e0b] uppercase">
               NUESTRAS SOLUCIONES
             </span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl lg:text-[38px] xl:text-[42px] font-extrabold tracking-tight leading-[1.1] text-white">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-[34px] font-extrabold tracking-tight leading-[1.1] text-white">
             Ingeniería que{" "}
             <span className="text-[#0284c7] sm:text-[#0ea5e9]">
               mueve tu empresa.
             </span>
           </h2>
-          <p className="mt-1 text-xs sm:text-sm lg:text-base text-slate-300 font-normal leading-normal">
+          <p className="mt-0.5 text-xs sm:text-[13px] md:text-sm text-slate-300 font-normal leading-normal">
             Explora lo que podemos construir contigo.
           </p>
         </div>
 
-        {/* CONTENEDOR DEL CARRUSEL (85% ancho en escritorio + parte del siguiente asomándose) */}
+        {/* CONTENEDOR DEL CARRUSEL: 100% limpio sin sangrado entre tarjetas */}
         <div
           ref={carouselRef}
           onTouchStart={handleTouchStart}
@@ -246,46 +272,40 @@ export function ServicesSection() {
           onTouchEnd={handleTouchEnd}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
-          className="relative w-full overflow-hidden select-none cursor-grab active:cursor-grabbing pb-1"
+          className="relative w-full overflow-hidden select-none cursor-grab active:cursor-grabbing pb-0.5"
         >
-          {/* Track desplazable */}
+          {/* Track desplazable: 100% por tarjeta para visualización completa sin recortes */}
           <div
             className="flex transition-transform duration-500 ease-out"
             style={{
-              // En desktop cada slide ocupa el 86% y deja ver el 14% restante del siguiente
-              transform: `translateX(-${currentIndex * 88}%)`,
+              transform: `translateX(-${currentIndex * 100}%)`,
             }}
           >
-            {servicesSlides.map((slide, idx) => {
-              const isCurrent = idx === currentIndex;
+            {slides.map((slide, idx) => {
               const SlideIcon = iconMap[slide.iconName] || Code2;
 
               return (
                 <div
                   key={slide.id}
-                  className="w-[92%] sm:w-[88%] lg:w-[86%] shrink-0 pr-3 sm:pr-5"
+                  className="w-full shrink-0 p-0"
                 >
                   <div
-                    className={`relative rounded-[22px] lg:rounded-[28px] p-4 sm:p-5 lg:p-6 xl:p-7 transition-all duration-300 flex flex-col lg:flex-row items-center justify-between gap-4 lg:gap-6 border ${
-                      isCurrent
-                        ? "bg-[#060e24]/95 border-2 border-[#0284c7] shadow-[0_0_40px_rgba(2,132,199,0.22)]"
-                        : "bg-[#050c1e]/75 border-slate-800/80 opacity-60 hover:opacity-85"
-                    }`}
+                    className="relative w-full rounded-[20px] lg:rounded-[24px] p-4 sm:p-5 lg:p-6 transition-all duration-300 flex flex-col lg:flex-row items-center justify-between gap-4 lg:gap-7 border-2 border-[#0284c7] bg-[#060e24]/95 shadow-[0_0_35px_rgba(2,132,199,0.2)]"
                   >
                     {/* Columna Izquierda: Información de alto impacto */}
-                    <div className="flex-1 w-full lg:max-w-xl flex flex-col justify-between space-y-2.5 sm:space-y-3 text-left">
+                    <div className="flex-1 w-full lg:max-w-xl flex flex-col justify-between space-y-2 sm:space-y-2.5 text-left">
                       {/* Pill Badge: Icono + 01 / SOFTWARE A MEDIDA */}
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-md bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400">
-                          <SlideIcon className="w-3.5 h-3.5" />
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400">
+                          <SlideIcon className="w-3 h-3" />
                         </div>
-                        <span className="font-mono text-[11px] sm:text-xs font-bold tracking-wider text-sky-400">
+                        <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-wider text-sky-400">
                           {slide.number} / {slide.tag}
                         </span>
                       </div>
 
                       {/* Título de 2 líneas orientado a beneficio */}
-                      <h3 className="text-xl sm:text-2xl lg:text-[26px] xl:text-[28px] font-extrabold tracking-tight leading-[1.15] text-white">
+                      <h3 className="text-lg sm:text-xl lg:text-[23px] font-extrabold tracking-tight leading-[1.15] text-white">
                         {slide.headlinePart1} <br />
                         <span className="text-[#0284c7] sm:text-[#0ea5e9]">
                           {slide.headlinePart2}
@@ -293,26 +313,26 @@ export function ServicesSection() {
                       </h3>
 
                       {/* Descripción concisa */}
-                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+                      <p className="text-xs sm:text-[13px] text-slate-300 leading-relaxed font-normal">
                         {slide.description}
                       </p>
 
                       {/* Bloque: QUÉ RESOLVEMOS */}
-                      <div className="pt-1.5 border-t border-slate-800/70">
-                        <span className="block text-[10px] font-mono uppercase tracking-widest text-slate-400 font-semibold mb-0.5">
+                      <div className="pt-1 border-t border-slate-800/70">
+                        <span className="block text-[9px] sm:text-[10px] font-mono uppercase tracking-widest text-slate-400 font-semibold mb-0.5">
                           QUÉ RESOLVEMOS
                         </span>
-                        <p className="text-xs sm:text-sm text-slate-300 font-medium leading-snug">
+                        <p className="text-xs sm:text-[13px] text-slate-300 font-medium leading-snug">
                           {slide.problemSolved}
                         </p>
                       </div>
 
                       {/* 3 Beneficios breves con checks dorados */}
-                      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 pt-0.5">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-0.5">
                         {slide.benefits.map((benefit, bIdx) => (
                           <div
                             key={bIdx}
-                            className="flex items-center gap-1.5 text-xs text-slate-200"
+                            className="flex items-center gap-1 text-[11px] sm:text-xs text-slate-200"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5 text-[#f59e0b] shrink-0" />
                             <span>{benefit}</span>
@@ -321,10 +341,10 @@ export function ServicesSection() {
                       </div>
 
                       {/* Botón de Contacto Dorado */}
-                      <div className="pt-1.5 sm:pt-2">
+                      <div className="pt-1">
                         <Link
                           href={`#contacto?servicio=${slide.id}`}
-                          className="inline-flex items-center gap-2 px-5 sm:px-6 py-2 sm:py-2.5 rounded-full bg-[#fbb624] hover:bg-[#f59e0b] text-slate-950 font-bold text-xs sm:text-sm shadow-md shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-[#fbb624] hover:bg-[#f59e0b] text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                         >
                           <span>Conversemos sobre tu proyecto</span>
                           <ArrowUpRight className="w-3.5 h-3.5 text-slate-950" />
@@ -333,18 +353,18 @@ export function ServicesSection() {
                     </div>
 
                     {/* Columna Derecha: Ilustración 3D generada sin recortes */}
-                    <div className="w-full lg:w-[45%] flex items-center justify-center relative min-h-[160px] sm:min-h-[200px] lg:min-h-[230px]">
+                    <div className="w-full lg:w-[42%] flex items-center justify-center relative min-h-[140px] sm:min-h-[170px] lg:min-h-[190px]">
                       {/* Resplandor focal reactivo */}
-                      <div className="absolute w-44 h-44 rounded-full bg-sky-500/15 blur-2xl pointer-events-none" />
+                      <div className="absolute w-36 h-36 rounded-full bg-sky-500/15 blur-2xl pointer-events-none" />
 
-                      <div className="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[360px] h-[160px] sm:h-[200px] lg:h-[230px] flex items-center justify-center transition-transform duration-500 hover:scale-[1.03]">
+                      <div className="relative w-full max-w-[240px] sm:max-w-[270px] lg:max-w-[310px] h-[140px] sm:h-[170px] lg:h-[190px] flex items-center justify-center transition-transform duration-500 hover:scale-[1.03]">
                         <Image
                           src={slide.imageSrc}
                           alt={slide.imageAlt}
-                          width={380}
-                          height={240}
+                          width={340}
+                          height={210}
                           style={{ width: "auto", height: "auto" }}
-                          className="max-w-full max-h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.65)]"
+                          className="max-w-full max-h-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.65)]"
                           priority={idx < 2}
                         />
                       </div>
@@ -357,28 +377,28 @@ export function ServicesSection() {
         </div>
 
         {/* CONTROLES DEBAJO DEL PANEL (Contador, Segmentos de progreso y Flechas) */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-3 sm:mt-4 pb-2.5 sm:pb-3 border-b border-slate-800/80">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 mt-2.5 sm:mt-3 pb-2 border-b border-slate-800/80">
           {/* Izquierda: Contador y 6 Segmentos de progreso */}
-          <div className="flex items-center gap-3.5 sm:gap-5">
+          <div className="flex items-center gap-3 sm:gap-4 pl-1 sm:pl-0">
             <div className="flex items-baseline gap-1 font-mono">
-              <span className="text-lg sm:text-xl font-extrabold text-white">
+              <span className="text-base sm:text-lg font-extrabold text-white">
                 {currentSlide.number}
               </span>
-              <span className="text-xs text-slate-500 font-semibold">
+              <span className="text-[11px] text-slate-500 font-semibold">
                 / 0{total}
               </span>
             </div>
 
-            {/* 6 Segmentos de progreso */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              {servicesSlides.map((_, pIdx) => (
+            {/* Segmentos de progreso */}
+            <div className="flex items-center gap-1.5">
+              {slides.map((_, pIdx) => (
                 <button
                   key={pIdx}
                   onClick={() => goToSlide(pIdx)}
                   className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                     pIdx === currentIndex
-                      ? "w-7 sm:w-9 bg-[#f59e0b] shadow-[0_0_8px_rgba(245,158,11,0.6)]"
-                      : "w-3.5 sm:w-5 bg-slate-800 hover:bg-slate-700"
+                      ? "w-6 sm:w-8 bg-[#f59e0b] shadow-[0_0_8px_rgba(245,158,11,0.6)]"
+                      : "w-3 sm:w-4 bg-slate-800 hover:bg-slate-700"
                   }`}
                   aria-label={`Ir al servicio ${pIdx + 1}`}
                 />
@@ -387,35 +407,35 @@ export function ServicesSection() {
           </div>
 
           {/* Derecha: Botones Anterior/Siguiente y texto 'Desliza para explorar' */}
-          <div className="flex items-center gap-2.5 sm:gap-3 self-end sm:self-auto">
-            <span className="text-[11px] font-mono text-slate-500 hidden md:inline">
+          <div className="flex items-center gap-2 sm:gap-2.5 self-end sm:self-auto">
+            <span className="text-[10px] font-mono text-slate-500 hidden md:inline">
               Desliza para explorar
             </span>
 
             <button
               onClick={prevSlide}
               disabled={currentIndex === 0}
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-slate-700/80 bg-slate-900/60 hover:bg-slate-800 hover:border-slate-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-white transition-all cursor-pointer"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-700/80 bg-slate-900/60 hover:bg-slate-800 hover:border-slate-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-white transition-all cursor-pointer"
               aria-label="Servicio anterior"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-3.5 h-3.5" />
             </button>
 
             <button
               onClick={nextSlide}
               disabled={currentIndex === total - 1}
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-slate-700/80 bg-slate-900/60 hover:bg-slate-800 hover:border-slate-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-white transition-all cursor-pointer"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-700/80 bg-slate-900/60 hover:bg-slate-800 hover:border-slate-500 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center text-white transition-all cursor-pointer"
               aria-label="Servicio siguiente"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
         {/* FILA INFERIOR: NOMBRES DE LOS 6 SERVICIOS PARA SELECCIÓN DIRECTA */}
-        <div className="pt-2 sm:pt-2.5 overflow-x-auto no-scrollbar">
-          <div className="flex items-center gap-1.5 sm:gap-3 min-w-max pb-1">
-            {servicesSlides.map((slide, tabIdx) => {
+        <div className="pt-1.5 sm:pt-2 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1 sm:gap-2 min-w-max pb-0.5">
+            {slides.map((slide, tabIdx) => {
               const isSelected = tabIdx === currentIndex;
               const TabIcon = iconMap[slide.iconName] || Code2;
 
@@ -423,14 +443,14 @@ export function ServicesSection() {
                 <button
                   key={slide.id}
                   onClick={() => goToSlide(tabIdx)}
-                  className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer border ${
+                  className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg text-[11px] sm:text-xs font-medium transition-all cursor-pointer border ${
                     isSelected
                       ? "text-[#f59e0b] border-b-2 border-b-[#f59e0b] border-transparent bg-slate-900/40"
                       : "text-slate-400 hover:text-slate-200 border-transparent hover:bg-slate-900/30"
                   }`}
                 >
                   <TabIcon
-                    className={`w-3.5 h-3.5 ${
+                    className={`w-3 h-3 ${
                       isSelected ? "text-[#f59e0b]" : "text-slate-500"
                     }`}
                   />

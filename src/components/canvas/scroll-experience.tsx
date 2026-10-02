@@ -22,6 +22,8 @@ const CosmicStarsCursor = dynamic(
 export function ScrollExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef(0);
+  const lastStateProgress = useRef(0);
   const [progress, setProgress] = useState(0);
   const [hasWebGL, setHasWebGL] = useState(true);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -63,7 +65,16 @@ export function ScrollExperience() {
       end: "bottom bottom",
       scrub: 0.8, // Ultra-fluid, smooth momentum damping
       onUpdate: (self) => {
-        setProgress(self.progress);
+        progressRef.current = self.progress;
+        // Throttle React state update so text/bar only re-renders when delta > 0.005 or at endpoints
+        if (
+          Math.abs(self.progress - lastStateProgress.current) > 0.005 ||
+          self.progress === 0 ||
+          self.progress === 1
+        ) {
+          lastStateProgress.current = self.progress;
+          setProgress(self.progress);
+        }
       },
     });
 
@@ -147,7 +158,7 @@ export function ScrollExperience() {
         <CosmicStarsCursor />
 
         {/* 3D WebGL Canvas Layer (Three.js + R3F) */}
-        <SceneCanvas progress={progress} />
+        <SceneCanvas progress={progress} progressRef={progressRef} />
 
         {/* --- SECTION 1: Intro Brand from inicio.png (0 - 20%) --- */}
         <div
@@ -263,9 +274,12 @@ export function ScrollExperience() {
           <span className="w-5 sm:w-6 h-[1.5px] bg-[#f59e0b] inline-block shadow-[0_0_6px_rgba(245,158,11,0.6)]" />
         </div>
 
-        {/* Right-Side Progress Track with Step Counter (01 / 05) */}
+        {/* Right-Side Progress Track with Step Counter (01 / 05) - scoped to Hero only */}
         <div
-          className="fixed right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3 pointer-events-none select-none"
+          className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-3 pointer-events-none select-none transition-opacity duration-200"
+          style={{
+            opacity: progress > 0.9 ? Math.max(0, 1 - (progress - 0.9) / 0.08) : 1,
+          }}
           aria-hidden="true"
         >
           <div className="w-[2px] h-32 sm:h-44 bg-slate-800/80 rounded-full overflow-hidden p-0 relative">
